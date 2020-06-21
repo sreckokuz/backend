@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'chat',
 ]
 
@@ -68,7 +69,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'cfehome.wsgi.application'
+#WSGI_APPLICATION = 'cfehome.wsgi.application'
+ASGI_APPLICATION = "cfehome.routing.application"
 
 
 # Database

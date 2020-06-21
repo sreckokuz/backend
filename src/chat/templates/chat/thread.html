@@ -3,16 +3,16 @@
 {% block content %}
 <h3>Thread for {% if user != object.first %}{{ object.first }}{% else %}{{ object.second }}{% endif %}</h3>
 <ul id='chat-items'>
-{% for chat in object.chatmessage_set.all %}
+    {% for chat in object.chatmessage_set.all %}
 
-<li>{{ chat.message }} via {{ chat.user }}</li>
+    <li>{{ chat.message }} via {{ chat.user }}</li>
 
-{% endfor %}
+    {% endfor %}
 </ul>
 
 <form id='form' method='POST'> {% csrf_token %}
-{{form.as_p }}
-<input type='submit' class='btn btn-primary'/>
+    {{form.as_p }}
+    <input type='submit' class='btn btn-primary' />
 </form>
 
 {% endblock %}
@@ -20,7 +20,40 @@
 {% block script %}
 
 <script>
-// websocket scripts
+    var loc = window.location
+    var formData = $("#form")
+    var idMessage = $("#id_message")
+    var wsStart = 'ws://'
+    if (loc.protocol == "https") {
+        wsStart = 'wss://'
+    }
+    var endpoint = wsStart + loc.host + loc.pathname
+    var socket = new WebSocket(endpoint)
+    socket.onmessage = function (e) {
+        console.log("message", e)
+    }
+    socket.onopen = function (e) {
+        console.log("open", e)
+        formData.submit(function (event) {
+            //var formDataSerializer = formData.serialize()
+            var msg = String(idMessage.val())
+            var finalData = {
+                "message": msg
+            }
+            console.log(JSON.stringify(finalData))
+            event.preventDefault()
+            socket.send(JSON.stringify(finalData))
+            idMessage.val('')
+        })
+    }
+    socket.onerror = function (e) {
+        console.log("error", e)
+    }
+    socket.onclose = function (e) {
+        console.log("close", e)
+    }
+
+
 
 </script>
 {% endblock %}
