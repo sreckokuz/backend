@@ -19,14 +19,26 @@ class ChatConsumer(AsyncConsumer):
         await self.send({
             "type": "websocket.accept",
         })
-        # await asyncio.sleep(10)
-        await self.send({
-            "type": "websocket.send",
-            "text": "Hello world"
-        })
 
     async def websocket_receive(self, event):
         print("receive", event)
+        front_text = event.get('text', None)
+        if front_text is not None:
+            dict_loaded_data = json.loads(front_text)
+            msg = dict_loaded_data.get('message')
+            print(msg)
+            me = self.scope['user']
+            username = 'default'
+            if me.is_authenticated:
+                username = me.username
+            myResponse = {
+                "message":  msg,
+                "username": username
+            }
+            await self.send({
+                "type": "websocket.send",
+                "text": json.dumps(myResponse)
+            })
 
     async def websocket_disconnect(self, event):
         print("disconect", event)
