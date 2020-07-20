@@ -19,13 +19,4 @@ $ source bin/activate
 
 
 ### Install Redis
-1. Download Redis
-    - Using [Homebrew](http://brew.sh):
-        ```
-        brew install redis
 
-        brew services start redis
-        ```
-        Brew permission errors? Try `sudo chown -R "$USER":admin /usr/local`
-
-    - Direct [Download](http://redis.io/download)
